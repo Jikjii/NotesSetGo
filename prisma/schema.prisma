@@ -26,6 +26,31 @@ model Post {
   @@map("posts")
 }
 
+model Class {
+  id Int @id @default(autoincrement())
+  name String
+  material Material[]
+  Date String
+  // not datetime bc we want a semester and year -> spring - 2022
+}
+
+model Material {
+  id Int @id @default(autoincrement())
+  title String
+  file String[]
+  published Boolean @default(false)
+  Description String?
+  // from -> semester - year @CreatedAt or Set actual date
+  //comments -> use mapping similar to POST @@map("post") *example above
+  // @@map("comments")
+  // what class does it belong to ?
+  class Class  @relation(fields: [classId], references: [id])
+  classId Int
+  // who created the material -> user *eventually add types *Students or Teachers etc
+  user User @relation(fields: [userId], references: [id])
+  userId String
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -41,6 +66,7 @@ model User {
   accounts      Account[] // next-auth requires this schema, user is in schema too
   sessions      Session[]
   posts         Post[]
+  material Material[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
 
